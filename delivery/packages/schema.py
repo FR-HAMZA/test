@@ -72,13 +72,45 @@ class CreateCity(graphene.Mutation):
         
         return CreateCity(city=city)
 
+class CityInput(graphene.InputObjectType):
+    id = graphene.ID()
+    name = graphene.String()
+    
+class UpdateCity(graphene.Mutation):
+    class Arguments:
+        city_data = CityInput(required=True)
 
 
+    city = graphene.Field(CityType)
+    
+    @staticmethod
+    def mutate(self, info,city_data=None):
+        city_instance = City.objects.get(pk=city_data.id)
 
+        print(f" city , {city_instance}")
+        city_instance.name = city_data.name
+        city_instance.save()
+        return UpdateCity(city=city_instance)
+
+class DeleteCity(graphene.Mutation):
+    class Arguments:
+        id = graphene.ID()
+
+    city = graphene.Field(CityType)
+
+    @staticmethod
+    def mutate(root, info, id):
+        city_instance = City.objects.get(pk=id)
+        city_instance.delete()
+
+        return None
+    
 class Mutation(graphene.ObjectType):
     create_package = CreatePackage.Field()
     create_deliveryMan = CreateDeliveryMan.Field()
     create_city = CreateCity.Field()
+    update_city = UpdateCity.Field()
+    delete_city = DeleteCity.Field()
 
 class Query(graphene.ObjectType):
     city = graphene.List(CityType)
@@ -96,7 +128,7 @@ class Query(graphene.ObjectType):
         return Package.objects.all()
 
     def resolve_devliveryMan(root, info):
-        return deliveryMan.objects.all()
+        return DeliveryMan.objects.all()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)

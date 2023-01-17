@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'packages',
     'graphene_django',
     "django_filters",
+        "corsheaders",
+
 
 ]
 
@@ -56,6 +58,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
 ]
 
 ROOT_URLCONF = 'delivery.urls'
@@ -78,7 +82,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'delivery.wsgi.application'
 
+CORS_ALLOWED_ORIGINS = [
 
+    "http://localhost:3000",
+    "http://127.0.0.1:9000",
+]
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
